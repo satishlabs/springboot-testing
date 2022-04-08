@@ -3,23 +3,24 @@ package com.satishlabs.springboot.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.satishlabs.springboot.model.Employee;
 import com.satishlabs.springboot.service.EmployeeService;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import org.hamcrest.CoreMatchers;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 
 @WebMvcTest
 public class EmployeeControllerTest {
@@ -41,7 +42,7 @@ public class EmployeeControllerTest {
                 .lastname("Prasad")
                 .email("satish_prasad@spd.com")
                 .build();
-        BDDMockito.given(employeeService.saveEmployee(ArgumentMatchers.any(Employee.class)))
+        given(employeeService.saveEmployee(any(Employee.class)))
                 .willAnswer((emp) -> emp.getArgument(0));
 
         //when - action or behaviour that we are going test
@@ -50,11 +51,14 @@ public class EmployeeControllerTest {
                 .content(objectMapper.writeValueAsString(employee)));
 
         //then - verify the result or output using assert statements
-        response.andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.firstname", CoreMatchers.is(employee.getFirstname())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lastname", CoreMatchers.is(employee.getLastname())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
+        response.andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstname",
+                        CoreMatchers.is(employee.getFirstname())))
+                .andExpect(jsonPath("$.lastname",
+                        CoreMatchers.is(employee.getLastname())))
+                .andExpect(jsonPath("$.email",
+                        CoreMatchers.is(employee.getEmail())));
     }
 
     //Junit test for Get All Employees REST API
@@ -64,14 +68,15 @@ public class EmployeeControllerTest {
         List<Employee> listEmployees = new ArrayList<>();
         listEmployees.add(Employee.builder().firstname("Kumar").lastname("Prasad").email("km@spd.com").build());
         listEmployees.add(Employee.builder().firstname("Satish").lastname("Prasad").email("sp@spd.com").build());
-        BDDMockito.given(employeeService.getAllEmployees()).willReturn(listEmployees);
+        given(employeeService.getAllEmployees()).willReturn(listEmployees);
 
         //when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/employees"));
 
         //then - verify the output
-        response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()",CoreMatchers.is(listEmployees.size())));
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.size()",
+                        CoreMatchers.is(listEmployees.size())));
     }
 }
