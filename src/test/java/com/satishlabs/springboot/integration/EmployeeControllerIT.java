@@ -30,7 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EmployeeControllerIT {
 
     @Container
-    private static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
+    private static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest")
+            .withUsername("satish")
+            .withPassword("satishtest")
+            .withDatabaseName("emsdb");
     @Autowired
     private MockMvc mockMvc;
 
