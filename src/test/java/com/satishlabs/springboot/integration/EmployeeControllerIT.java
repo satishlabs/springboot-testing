@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 //@Testcontainers
-public class EmployeeControllerIT extends AbstractionBaseTest{
+public class EmployeeControllerIT extends AbstractionContainerBaseTest{
 
    /* @Container
     private static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest")
